@@ -1,0 +1,63 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forum</title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          background-color: #f0f0f0;
+          margin: 0;
+          padding: 0;
+      }
+      .posts {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 10px;
+          padding: 10px;
+          max-width: 1200px;
+          margin: auto;
+      }
+      .posts a {
+          text-decoration: none;
+      }
+      .parent-post {
+          position: relative;
+      }
+  </style>
+</head>
+
+
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1><span class="standout">Forum</span></h1>
+</div>
+<p class="lead">The place for you to ask questions regarding the cca</p>
+
+<body>
+
+  {% if session.logged_in %}
+  <div class="admin-controls">
+      <p>Welcome, {{ session.username }}!</p>
+      <a href="{{ url_for('logout') }}">Logout</a>
+  </div>
+  {% endif %}
+
+  <div class="posts">
+    {% for parent in parents %}
+    <div class="parent-post">
+        <h3>{{ parent[1] }}</h3>
+        <p><small>{{ parent[3] }}</small></p>
+        <a href="{{ url_for('post', post_id=parent[0]) }}">
+            <button>View Post</button>
+        </a>
+    </div>
+    {% endfor %}
+  </div>
+
+</body>
+
+
+{% endblock %}

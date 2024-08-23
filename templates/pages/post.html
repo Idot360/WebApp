@@ -1,0 +1,19 @@
+<h1>{{ parent[1] }}</h1>
+<p>{{ parent[2] }}</p>
+<p><small>{{ parent[3] }}</small></p>
+
+<h2>Replies</h2>
+{% for child in children %}
+    <div class="child-post">
+        <p>{{ child[1] }}</p>
+        <p><small>{{ child[2] }}</small></p>
+    </div>
+{% endfor %}
+
+<!-- Reply form -->
+<h3>Leave a Reply</h3>
+<form method="POST" action="{{ url_for('submit_post') }}">
+    <textarea name="message" required></textarea>
+    <input type="hidden" name="parent_id" value="{{ parent['ID'] }}">
+    <button type="submit">Reply</button>
+</form>

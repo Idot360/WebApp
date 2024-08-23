@@ -2,12 +2,10 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import *
-from models import *
+from flask import Flask,render_template,request,redirect,flash,url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
-import logging
-from logging import Formatter, FileHandler
 from forms import *
+#from models import *
 import os
 
 #----------------------------------------------------------------------------#
@@ -16,7 +14,7 @@ import os
 
 app = Flask(__name__)
 app.config.from_object('config')
-db.init_app(app)
+#db.init_app(app)
 
 #----------------------------------------------------------------------------#
 # Blueprints.
@@ -29,13 +27,13 @@ db.init_app(app)
 # Flask_Admin.
 #----------------------------------------------------------------------------#
 
-panel = Admin(
-    app,
-    name='Admin Control Panel',
-    template_mode='bootstrap3',
-)
-panel.add_link(MenuLink(name='Logout', category='', url='/logout'))
-panel.add_view(DefaultModelView(User, db.session, column_searchable_list=['username', 'email']))
+#panel = Admin(
+#    app,
+#    name='Admin Control Panel',
+#    template_mode='bootstrap3',
+#)
+#panel.add_link(MenuLink(name='Logout', category='', url='/logout'))
+#panel.add_view(DefaultModelView(User, db.session, column_searchable_list=['username', 'email']))
 
 #----------------------------------------------------------------------------#
 # Login.
@@ -73,6 +71,114 @@ def home():
 @app.route('/about')
 def about():
     return render_template('pages/placeholder.about.html')
+
+
+@app.route('/forum')
+def forum():
+    import sqlite3
+    con = sqlite3.connect('forum.db')
+    cur = con.cursor()
+    cur.execute("SELECT * FROM Parent ORDER BY Date DESC")
+    parents = cur.fetchall()
+    con.close()
+
+    return render_template('pages/forum.html', parents=parents)
+
+
+@app.route('/post/<int:post_id>')
+def post(post_id):
+    import sqlite3
+    con = sqlite3.connect('forum.db')
+    cur = con.cursor()
+    # Fetch the parent post
+    cur.execute("SELECT * FROM Parent WHERE ID = ?", (post_id,))
+    parent = cur.fetchone()
+
+    if not parent:
+        return "Post not found", 404
+
+    # Fetch all replies (Child posts) associated with this Parent post
+    cur.execute("SELECT * FROM Child WHERE ParentID = ? ORDER BY Date ASC", (post_id,))
+    children = cur.fetchall()
+    con.close()
+
+    return render_template('pages/post.html', parent=parent, children=children)
+
+
+
+@app.route('/submit', methods=['POST'])
+def submit_post():
+    
+    if request.method == 'POST':
+        import sqlite3
+        con = sqlite3.connect('forum.db')
+        cur = con.cursor()
+
+        title = request.form['title']
+        message = request.form['message']
+        parent_id = request.form.get('parent_id')  # None if it's a new thread
+
+        # Insert the post into the Unapproved table
+        cur.execute("INSERT INTO Unapproved (Title, Message, Date, ParentID) VALUES (?, ?, datetime('now'), ?)",
+                        (title, message, parent_id))
+        con.commit()
+        con.close()
+
+        flash('Your post has been submitted for approval.')
+        return redirect(url_for('forum'))
+    return render_template('forms/submit.html')
+
+
+@app.route('/approve_post/<int:post_id>', methods=['POST'])
+def approve_post(post_id):
+    
+    import sqlite3
+    con = sqlite3.connect('forum.db')
+    cur = con.cursor()
+    # Fetch the post from Unapproved table
+    cur.execute("SELECT * FROM Unapproved WHERE ID = ?", (post_id,))
+    post = cur.fetchone()
+
+    if post:
+        if post['ParentID'] is None:
+            # If it's a Parent post, insert into Parent table
+            cur.execute("INSERT INTO Parent (Title, Message, Date) VALUES (?, ?, ?)",
+                           (post['Title'], post['Message'], post['Date']))
+        else:
+            # If it's a Child post, insert into Child table
+            cur.execute("INSERT INTO Child (Message, Date, ParentID) VALUES (?, ?, ?)",
+                           (post['Message'], post['Date'], post['ParentID']))
+        
+        # Remove the post from the Unapproved table
+        cur.execute("DELETE FROM Unapproved WHERE ID = ?", (post_id,))
+        con.commit()
+
+    con.close()
+    flash('Post approved successfully.')
+    return redirect(url_for('approve'))
+
+
+
+
+@app.route('/gallery')
+def gallery():
+    return render_template('pages/gallery.html', image_urls=["https://example.com/image1.jpg",
+                                                             "https://example.com/image1.jpg",
+                                                             "https://example.com/image1.jpg",
+                                                             "https://example.com/image1.jpg",
+                                                             "https://example.com/image1.jpg",
+                                                             "https://example.com/image1.jpg",
+                                                             "https://example.com/image1.jpg",
+                                                             "https://example.com/image1.jpg",
+                                                             "https://example.com/image1.jpg",
+                                                             "https://example.com/image1.jpg",
+                                                             "https://example.com/image1.jpg",
+                                                             "https://example.com/image1.jpg"])
+
+
+#@app.route('/forum/approval')
+#@login_required
+
 
 @app.route('/profile')
 @login_required
@@ -139,15 +245,6 @@ def internal_error(error):
 def not_found_error(error):
     return render_template('errors/404.html'), 404
 
-if not app.debug:
-    file_handler = FileHandler('error.log')
-    file_handler.setFormatter(
-        Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
-    )
-    app.logger.setLevel(logging.INFO)
-    file_handler.setLevel(logging.INFO)
-    app.logger.addHandler(file_handler)
-    app.logger.info('errors')
 
 #----------------------------------------------------------------------------#
 # Launch.
@@ -156,10 +253,3 @@ if not app.debug:
 # Default port:
 if __name__ == '__main__':
     app.run()
-
-# Or specify port manually:
-'''
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
-'''
