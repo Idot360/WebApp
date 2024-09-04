@@ -6,6 +6,7 @@ from flask import Flask, render_template, request, redirect, flash, url_for, ses
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 from forms import *
 from data import *
+from datetime import timedelta
 import os
 
 #----------------------------------------------------------------------------#
@@ -14,26 +15,13 @@ import os
 
 app = Flask(__name__)
 app.config.from_object('config')
-#db.init_app(app)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
-#----------------------------------------------------------------------------#
-# Blueprints.
-#----------------------------------------------------------------------------#
 
-# from __ import __
-# app.register_blueprint(__)
-
-#----------------------------------------------------------------------------#
-# Flask_Admin.
-#----------------------------------------------------------------------------#
-
-#panel = Admin(
-#    app,
-#    name='Admin Control Panel',
-#    template_mode='bootstrap3',
-#)
-#panel.add_link(MenuLink(name='Logout', category='', url='/logout'))
-#panel.add_view(DefaultModelView(User, db.session, column_searchable_list=['username', 'email']))
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    session.modified = True  # To refresh the session timeout on each request
 
 #----------------------------------------------------------------------------#
 # Login.
@@ -56,8 +44,6 @@ def user_loader(username):
 
 #----------------------------------------------------------------------------#
 # Controllers.
-#    I suggest you create Blueprints for your routes to keep them tidy (up there),
-#    but I won't to that here.
 #----------------------------------------------------------------------------#
 
 @app.route('/')
@@ -159,18 +145,11 @@ def approve_post(post_id):
 
 @app.route('/gallery')
 def gallery():
-    return render_template('pages/gallery.html', image_urls=["https://example.com/image1.jpg",
-                                                             "https://example.com/image1.jpg",
-                                                             "https://example.com/image1.jpg",
-                                                             "https://example.com/image1.jpg",
-                                                             "https://example.com/image1.jpg",
-                                                             "https://example.com/image1.jpg",
-                                                             "https://example.com/image1.jpg",
-                                                             "https://example.com/image1.jpg",
-                                                             "https://example.com/image1.jpg",
-                                                             "https://example.com/image1.jpg",
-                                                             "https://example.com/image1.jpg",
-                                                             "https://example.com/image1.jpg"])
+    image_folder = os.path.join('static', 'img')
+    images = sorted([url_for('static', filename=f'img/{filename}') 
+                     for filename in os.listdir(image_folder) 
+                     if filename.endswith(('.png', '.jpg', '.jpeg', '.gif'))])
+    return render_template('pages/gallery.html', image_urls=images)
 
 
 #@app.route('/forum/approval')
@@ -206,6 +185,11 @@ def logout():
     flash("You Have Been Logged Out", 'info')
     return ('', 204) if request.method == 'POST' else redirect(url_for('home'))
 
+
+@app.route('/heartbeat', methods=['POST'])
+def heartbeat():
+    session.modified = True  # Refresh session timeout
+    return '', 204  # Return no content
 
 # Error handlers ------------------------------------------------------------#
 

@@ -25,19 +25,21 @@
 <!-- /favicons -->
 
 <script>
-  let logoutTimer;
+  function sendHeartbeat() {
+    fetch('/heartbeat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+               }
+      });
+  }
 
-  document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'hidden') {
-        // Delay logout to distinguish between tab close and tab switch/navigation
-        logoutTimer = setTimeout(() => {
-            navigator.sendBeacon('/logout');
-        }, 600000); // 10-minute delay
-    } else if (document.visibilityState === 'visible') {
-        // Clear the timer if the user returns to the page
-        clearTimeout(logoutTimer);
-    }
-  });
+  // Send a heartbeat every 5 minutes
+  setInterval(sendHeartbeat, 5 * 60 * 1000);
+
+  // Optionally, send a heartbeat on user activity
+  document.addEventListener('mousemove', sendHeartbeat);
+  document.addEventListener('keydown', sendHeartbeat);
 </script>
 
 </head>

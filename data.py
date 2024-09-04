@@ -1,15 +1,6 @@
 import sqlite3
 
 
-def image_fetch():
-    con = sqlite3.connect('data.db')
-    cur = con.cursor()
-    cur.execute("SELECT url FROM images")
-    urls = cur.fetchall()
-
-    con.close()
-
-
 def credentials():
     import numpy as np
     con = sqlite3.connect('data.db')
