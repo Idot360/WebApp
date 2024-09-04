@@ -1,3 +1,8 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Forum{% endblock %}
+{% block content %}
+
+
 <h1>{{ parent[1] }}</h1>
 <p>{{ parent[2] }}</p>
 <p><small>{{ parent[3] }}</small></p>
@@ -17,3 +22,6 @@
     <input type="hidden" name="parent_id" value="{{ parent['ID'] }}">
     <button type="submit">Reply</button>
 </form>
+
+
+{% endblock %}
