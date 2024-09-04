@@ -198,13 +198,14 @@ def login():
     return render_template('forms/login.html', form=form)
 
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST', 'GET'])
 @login_required
 def logout():
     logout_user()
-    session['logged_in'] = False
-    flash("You've successfully logged out.", 'success')
-    return redirect(url_for('home'))
+    session.pop('logged_in', None)
+    flash("You Have Been Logged Out", 'info')
+    return ('', 204) if request.method == 'POST' else redirect(url_for('home'))
+
 
 # Error handlers ------------------------------------------------------------#
 

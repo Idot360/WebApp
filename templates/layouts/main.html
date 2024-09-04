@@ -24,6 +24,22 @@
 <link rel="shortcut icon" href="/static/ico/favicon.png">
 <!-- /favicons -->
 
+<script>
+  let logoutTimer;
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+        // Delay logout to distinguish between tab close and tab switch/navigation
+        logoutTimer = setTimeout(() => {
+            navigator.sendBeacon('/logout');
+        }, 600000); // 10-minute delay
+    } else if (document.visibilityState === 'visible') {
+        // Clear the timer if the user returns to the page
+        clearTimeout(logoutTimer);
+    }
+  });
+</script>
+
 </head>
 <body>
 
