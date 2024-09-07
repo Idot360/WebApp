@@ -1,0 +1,57 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Approve Posts{% endblock %}
+{% block content %}
+
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+  <h1><span class="standout">Approve Posts</span></h1>
+</div>
+
+<p class="lead">Review and approve pending posts below.</p>
+
+<div class="unapproved-posts">
+  {% for post in unapproved_posts %}
+    <div class="unapproved-post">
+      <!-- Check if the post is a child (reply) -->
+      {% if post.is_child %}
+        <h4 class="post-type">Reply to:</h4>
+        <div class="parent-post">
+          <h5>{{ post.parent_title }}</h5>
+          <p>{{ post.parent_message }}</p>
+          <!-- Divider between content and author/date -->
+          <hr class="post-divider">
+          <div class="post-footer">
+            <p><strong>Author:</strong> {{ post.parent_author }} | <small>{{ post.parent_date }}</small></p>
+          </div>
+        </div>
+
+        <h4 class="post-type">Unapproved Reply:</h4>
+        <div class="child-post">
+          <p>{{ post.message }}</p>
+          <hr class="post-divider">
+          <div class="post-footer">
+            <p><strong>Author:</strong> {{ post.author }} | <small>{{ post.date }}</small></p>
+            <form method="POST" action="{{ url_for('approve_post', post_id=post.id) }}">
+              <button class="approve-button" type="submit">Approve Reply</button>
+            </form>
+          </div>
+        </div>
+      {% else %}
+        <!-- Parent Post -->
+        <h4 class="post-type">Unapproved Post:</h4>
+        <div class="parent-post">
+          <h5>{{ post.title }}</h5>
+          <p>{{ post.message }}</p>
+          <hr class="post-divider">
+          <div class="post-footer">
+            <p><strong>Author:</strong> {{ post.author }} | <small>{{ post.date }}</small></p>
+            <form method="POST" action="{{ url_for('approve_post', post_id=post.id) }}">
+              <button class="approve-button" type="submit">Approve Post</button>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

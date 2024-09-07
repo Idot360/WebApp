@@ -1,62 +1,92 @@
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forum</title>
-  <style>
-      body {
-          font-family: Arial, sans-serif;
-          background-color: #f0f0f0;
-          margin: 0;
-          padding: 0;
-      }
-      .posts {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 10px;
-          padding: 10px;
-          max-width: 1200px;
-          margin: auto;
-      }
-      .posts a {
-          text-decoration: none;
-      }
-      .parent-post {
-          position: relative;
-      }
-  </style>
-</head>
+<style>
+/* Approve button styling */
+.approve-button {
+  padding: 10px 15px;
+  background-color: #ff7f50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+}
+
+.approve-button:hover {
+  background-color: #e67300;
+}
+
+/* Add New Post button styling */
+.add-post-button {
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  margin-left: 10px; /* Align to the approve button */
+}
+
+.add-post-button:hover {
+  background-color: #218838;
+}
+
+/* Posts grid styling */
+.posts {
+  display: grid;
+  grid-template-columns: 1fr; /* Single column by default */
+  gap: 20px; /* Increased gap for better spacing */
+  padding: 10px;
+  max-width: 1200px; /* Reduced max-width to make posts smaller */
+  margin: auto;
+}
+
+@media (min-width: 992px) { /* Laptop breakpoint */
+  .posts {
+    grid-template-columns: repeat(2, 1fr); /* Two columns on laptop screens */
+  }
+}
+</style>
 
 
 {% extends 'layouts/main.html' %}
-{% block title %}Home{% endblock %}
+{% block title %}Forum{% endblock %}
 {% block content %}
 
-<div class="page-header">
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
   <h1><span class="standout">Forum</span></h1>
+
+  <div>
+    <!-- Approve Posts Button (only visible when logged in and user is admin) -->
+    {% if session.get('logged_in') %}
+    <a href="{{ url_for('approve') }}">
+      <button class="approve-button">Approve Posts</button>
+    </a>
+    {% endif %}
+
+    <a href="{{ url_for('submit_post') }}">
+      <button class="add-post-button">Add New Post</button>
+    </a>
+  </div>
 </div>
+
 <p class="lead">The place for you to ask questions regarding the cca</p>
 
-<body>
-
-  {% if session.logged_in %}
-  <div class="admin-controls">
-      <strong>KILL YOURSELF</strong>
-  </div>
-  {% endif %}
-
-  <div class="posts">
-    {% for parent in parents %}
-    <div class="parent-post">
-        <h3>{{ parent[1] }}</h3>
-        <p><small>{{ parent[3] }}</small></p>
+<div class="posts">
+  {% for parent in parents %}
+  <div class="parent-post">
+      <h3>{{ parent[1] }}</h3>
+      <hr class="post-divider">
+      <div class="post-footer">
+        <p><strong>Author:</strong> {{ parent[4] }} | <small>{{ parent[3] }}</small></p>
         <a href="{{ url_for('post', post_id=parent[0]) }}">
-            <button>View Post</button>
+          <button>View Post</button>
         </a>
-    </div>
-    {% endfor %}
+      </div>
   </div>
-
-</body>
-
+  {% endfor %}
+</div>
 
 {% endblock %}

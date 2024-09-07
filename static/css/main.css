@@ -73,25 +73,209 @@ footer svg {
   color: #ff7575;
 }
 
-code {
-  background-color: #f9f9f9;
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-size: 1.1em;
-}
-.formula {
-  font-size: 1.2em;
-  background-color: #f0f0f0;
+/* Post container with smaller size */
+.parent-post {
+  border: 1px solid #ccc;
   padding: 10px;
+  margin-bottom: 15px;
   border-radius: 5px;
-  margin-bottom: 20px;
+  background-color: #f4f4f9;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+  position: relative;
 }
-.example {
-  background-color: #e8f4f8;
+
+.parent-post:hover {
+  background-color: #eaeaf7;
+}
+
+/* Post title styling with highlighted background */
+.parent-post h3 {
+  margin: 0 0 10px;
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
   padding: 10px;
-  border-left: 4px solid #3498db;
-  margin-bottom: 20px;
+  background-color: #f0f0ff; /* Slightly highlighted background */
+  border-radius: 4px;
 }
+
+/* Post author and date styling */
+.parent-post p {
+  margin: 0 0 4px 0; /* Reduced space between author and date */
+}
+
+.parent-post p small {
+  color: #888;
+  font-size: 12px;
+}
+
+/* Button to view posts */
+.parent-post a button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.parent-post a button:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for replies (child posts) */
+.child-post {
+  margin-top: 10px;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd; /* Border to separate replies */
+  border-radius: 4px;
+}
+
+.child-post p {
+  margin: 0;
+}
+
+.child-post p small {
+  color: #888;
+  font-size: 12px;
+}
+
+/* Form styling */
+form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+form button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #218838;
+}
+
+/* Styling for the post submission page */
+.submit-form {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.submit-form input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.submit-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.submit-form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-form button:hover {
+  background-color: #218838;
+}
+
+.unapproved-posts {
+  padding: 10px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.unapproved-post {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: #fff8e1; /* Light background for unapproved posts */
+}
+
+.post-type {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.parent-post, .child-post {
+  background-color: #f0f0ff;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
+
+.post-divider {
+  margin: 10px 0;
+  border: 0;
+  height: 1px;
+  background: #787878; /* Faint line divider */
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-footer p {
+  margin: 0;
+  color: #888;
+  font-size: 12px;
+}
+
+.approve-button {
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 15px; /* Slightly moved to the left */
+}
+
+.approve-button:hover {
+  background-color: #218838;
+}
+
 
 .standout {
   text-transform: uppercase;

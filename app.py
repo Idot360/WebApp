@@ -64,7 +64,6 @@ def forum():
     cur.execute("SELECT * FROM Parent ORDER BY Date DESC")
     parents = cur.fetchall()
     con.close()
-
     return render_template('pages/forum.html', parents=parents)
 
 
@@ -73,6 +72,7 @@ def post(post_id):
     import sqlite3
     con = sqlite3.connect('forum.db')
     cur = con.cursor()
+    
     # Fetch the parent post
     cur.execute("SELECT * FROM Parent WHERE ID = ?", (post_id,))
     parent = cur.fetchone()
@@ -81,16 +81,30 @@ def post(post_id):
         return "Post not found", 404
 
     # Fetch all replies (Child posts) associated with this Parent post
-    cur.execute("SELECT * FROM Child WHERE ParentID = ? ORDER BY Date ASC", (post_id,))
+    cur.execute("SELECT ID, Message, Date, Author FROM Child WHERE ParentID = ? ORDER BY Date ASC", (post_id,))
     children = cur.fetchall()
+    cur.execute("SELECT ID, Message, Date, Author FROM Unapproved WHERE ParentID = ? ORDER BY Date ASC", (post_id,))
+    children += [ x+tuple([False]) for x in cur.fetchall()]
+    
     con.close()
-
     return render_template('pages/post.html', parent=parent, children=children)
 
 
-
-@app.route('/submit', methods=['POST'])
+@app.route('/submit_post')
 def submit_post():
+    return ""
+
+@app.route('/delete_post/<int:post_id>')
+def delete_post():
+    return ""
+
+@app.route('/delete_reply/<int:reply_id>')
+def delete_reply():
+    return ""
+
+
+@app.route('/reply', methods=['POST'])
+def reply():
     
     if request.method == 'POST':
         import sqlite3
@@ -112,7 +126,55 @@ def submit_post():
     return render_template('forms/submit.html')
 
 
-@app.route('/approve_post/<int:post_id>', methods=['POST'])
+@app.route('/approve', methods=['GET', 'POST'])
+@login_required
+def approve():
+    import sqlite3
+    conn = sqlite3.connect('forum.db')
+    cursor = conn.cursor()
+    
+    # Fetch all unapproved posts
+    cursor.execute("""
+        SELECT Unapproved.ID, Unapproved.Message, Unapproved.Date, Unapproved.ParentID, Unapproved.Author,
+               Parent.Title, Parent.Message, Parent.Author, Parent.Date
+        FROM Unapproved
+        LEFT JOIN Parent ON Unapproved.ParentID = Parent.ID
+    """)
+    
+    unapproved_posts_data = cursor.fetchall()
+    conn.close()
+
+    # Organize posts for the template
+    unapproved_posts = []
+    for post in unapproved_posts_data:
+        if post[3] is None:  # If ParentID is None, it's a parent post
+            unapproved_posts.append({
+                'id': post[0],
+                'message': post[1],
+                'date': post[2],
+                'author': post[4],
+                'is_child': False,
+                'title': "Untitled"  # Add a default title if missing
+            })
+        else:  # Child post (reply)
+            unapproved_posts.append({
+                'id': post[0],
+                'message': post[1],
+                'date': post[2],
+                'author': post[4],
+                'is_child': True,
+                'parent_title': post[5],
+                'parent_message': post[6],
+                'parent_author': post[7],
+                'parent_date': post[8]
+            })
+    
+    return render_template('pages/approve.html', unapproved_posts=unapproved_posts)
+
+
+
+
+@app.route('/approve/<int:post_id>', methods=['POST'])
 def approve_post(post_id):
     
     import sqlite3
@@ -150,10 +212,6 @@ def gallery():
                      for filename in os.listdir(image_folder) 
                      if filename.endswith(('.png', '.jpg', '.jpeg', '.gif'))])
     return render_template('pages/gallery.html', image_urls=images)
-
-
-#@app.route('/forum/approval')
-#@login_required
 
 
 @app.route('/login', methods=['GET', 'POST'])

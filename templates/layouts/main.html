@@ -66,16 +66,13 @@
               <a class="nav-link {% if request.endpoint == 'forum' %} active {% endif %}" href="{{ url_for('forum') }}">Forum</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Train</a>
             </li>
           </ul>
           {% if session.get('logged_in') %}
           <div class="d-flex">
-            <a href="{{ url_for('logout') }}"><button class="btn btn-primary">Register</button></a>
+            <a href="{{ url_for('logout') }}"><button class="btn btn-secondary">Logout</button></a>
           </div>
-            <div class="d-flex">
-              <a href="{{ url_for('logout') }}"><button class="btn btn-primary">Logout</button></a>
-            </div>
           {% else %}
             <div class="d-flex">
               <a href="{{ url_for('login') }}"><button class="btn btn-primary">Admin Login</button></a>
