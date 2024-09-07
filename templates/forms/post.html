@@ -32,7 +32,6 @@
 /* Approved vs Unapproved Replies */
 .unapproved-reply {
   background-color: #fff5f5; /* Light red for unapproved */
-  border-left: 3px solid #dc3545;
 }
 
 .reply-message {
@@ -127,7 +126,7 @@
 
   <div class="replies-container">
     {% for child in children %}
-      <div class="child-post {% if child[4] == False %}unapproved-reply{% endif %}">
+      <div class="child-post" {% if child[4] == False %} style="background-color: #fdefef" {% endif %}>
         <p class="reply-message">{{ child[1] }}</p>
         <hr class="post-divider">
         <div class="post-footer">
@@ -135,7 +134,7 @@
           <div class="reply-actions">
             {% if session.get('logged_in') %}
               {% if child[4] == False %}
-              <form method="POST" action="{{ url_for('approve', reply_id=child[0]) }}" class="approve-reply-form">
+              <form method="POST" action="{{ url_for('approve', post_id=child[0]) }}" class="approve-reply-form">
                 <button type="submit" class="approve-button">
                   <i class="fa fa-check"></i> <!-- Tick icon -->
                 </button>
@@ -155,7 +154,7 @@
 
   <!-- Reply Form -->
   <h3 class="reply-form-header">Reply</h3>
-  <form method="POST" action="{{ url_for('reply') }}" class="reply-form">
+  <form method="POST" action="{{ url_for('submit_reply', parent_id=parent[0]) }}" class="reply-form">
     <!-- Author Name Field -->
     <input type="text" name="author" placeholder="Name (Optional)">
     

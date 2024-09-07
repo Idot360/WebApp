@@ -73,7 +73,6 @@ footer svg {
   color: #ff7575;
 }
 
-/* Post container with smaller size */
 .parent-post {
   border: 1px solid #ccc;
   padding: 10px;
@@ -167,50 +166,6 @@ form button {
 }
 
 form button:hover {
-  background-color: #218838;
-}
-
-/* Styling for the post submission page */
-.submit-form {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 20px;
-  background-color: white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-}
-
-.submit-form input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  font-size: 16px;
-}
-
-.submit-form textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-.submit-form button {
-  width: 100%;
-  padding: 10px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.submit-form button:hover {
   background-color: #218838;
 }
 

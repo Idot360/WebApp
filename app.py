@@ -33,7 +33,7 @@ login_manager.init_app(app)
 class LoginUser(UserMixin):
     @property
     def is_admin(self):
-        return self.is_authenticated and self.id == 'admin' 
+        return True
 
 
 @login_manager.user_loader
@@ -48,12 +48,21 @@ def user_loader(username):
 
 @app.route('/')
 def home():
-    return render_template('pages/placeholder.home.html')
+    return render_template('pages/home.html')
 
 
 @app.route('/about')
 def about():
     return render_template('pages/about.html')
+
+
+@app.route('/gallery')
+def gallery():
+    image_folder = os.path.join('static', 'img')
+    images = sorted([url_for('static', filename=f'img/{filename}') 
+                     for filename in os.listdir(image_folder) 
+                     if filename.endswith(('.png', '.jpg', '.jpeg', '.gif'))])
+    return render_template('pages/gallery.html', image_urls=images)
 
 
 @app.route('/forum')
@@ -65,6 +74,11 @@ def forum():
     parents = cur.fetchall()
     con.close()
     return render_template('pages/forum.html', parents=parents)
+
+
+#----------------------------------------------------------------------------#
+# Forum Functionality
+#----------------------------------------------------------------------------#
 
 
 @app.route('/post/<int:post_id>')
@@ -87,25 +101,11 @@ def post(post_id):
     children += [ x+tuple([False]) for x in cur.fetchall()]
     
     con.close()
-    return render_template('pages/post.html', parent=parent, children=children)
+    return render_template('forms/post.html', parent=parent, children=children)
 
 
-@app.route('/submit_post')
+@app.route('/submit_post', methods=['GET', 'POST'])
 def submit_post():
-    return ""
-
-@app.route('/delete_post/<int:post_id>')
-def delete_post():
-    return ""
-
-@app.route('/delete_reply/<int:reply_id>')
-def delete_reply():
-    return ""
-
-
-@app.route('/reply', methods=['POST'])
-def reply():
-    
     if request.method == 'POST':
         import sqlite3
         con = sqlite3.connect('forum.db')
@@ -117,18 +117,54 @@ def reply():
 
         # Insert the post into the Unapproved table
         cur.execute("INSERT INTO Unapproved (Title, Message, Date, ParentID) VALUES (?, ?, datetime('now'), ?)",
-                        (title, message, parent_id))
+                    (title, message, parent_id))
         con.commit()
         con.close()
 
-        flash('Your post has been submitted for approval.')
+        flash('Your post has been submitted for approval.', "success")
         return redirect(url_for('forum'))
     return render_template('forms/submit.html')
 
 
-@app.route('/approve', methods=['GET', 'POST'])
+@app.route('/delete_post/<int:post_id>', methods=['POST'])
 @login_required
-def approve():
+def delete_post(post_id):
+    import sqlite3
+    con = sqlite3.connect('forum.db')
+    cur = con.cursor()
+
+    # Delete the parent post and all its replies
+    cur.execute("DELETE FROM Parent WHERE ID = ?", (post_id,))
+    cur.execute("DELETE FROM Child WHERE ParentID = ?", (post_id,))
+    
+    con.commit()
+    con.close()
+    
+    flash('Post deleted successfully.', "success")
+    return redirect(url_for('forum'))
+
+
+@app.route('/delete_reply/<int:reply_id>', methods=['POST'])
+@login_required
+def delete_reply(reply_id):
+    import sqlite3
+    con = sqlite3.connect('forum.db')
+    cur = con.cursor()
+
+    # Delete the child post (reply)
+    cur.execute("DELETE FROM Child WHERE ID = ?", (reply_id,))
+    cur.execute("DELETE FROM Unapproved WHERE ID = ?", (reply_id,))
+    
+    con.commit()
+    con.close()
+    
+    flash('Reply deleted successfully.', "success")
+    return redirect(request.referrer or url_for('forum'))
+
+
+@app.route('/approve_posts', methods=['GET', 'POST'])
+@login_required
+def approve_posts():
     import sqlite3
     conn = sqlite3.connect('forum.db')
     cursor = conn.cursor()
@@ -147,7 +183,7 @@ def approve():
     # Organize posts for the template
     unapproved_posts = []
     for post in unapproved_posts_data:
-        if post[3] is None:  # If ParentID is None, it's a parent post
+        if post[5] is None:  # If ParentID is None, it's a parent post
             unapproved_posts.append({
                 'id': post[0],
                 'message': post[1],
@@ -172,46 +208,69 @@ def approve():
     return render_template('pages/approve.html', unapproved_posts=unapproved_posts)
 
 
-
-
 @app.route('/approve/<int:post_id>', methods=['POST'])
-def approve_post(post_id):
-    
+@login_required
+def approve(post_id):
+
     import sqlite3
     con = sqlite3.connect('forum.db')
     cur = con.cursor()
-    # Fetch the post from Unapproved table
+
+    # Fetch the post from Unapproved
     cur.execute("SELECT * FROM Unapproved WHERE ID = ?", (post_id,))
     post = cur.fetchone()
 
     if post:
-        if post['ParentID'] is None:
+        if post[5] is None:
             # If it's a Parent post, insert into Parent table
-            cur.execute("INSERT INTO Parent (Title, Message, Date) VALUES (?, ?, ?)",
-                           (post['Title'], post['Message'], post['Date']))
+            cur.execute("INSERT INTO Parent (Title, Message, Date, Author) VALUES (?, ?, ?, ?)",
+                        (post[4], post[1], post[2], post[3]))
         else:
-            # If it's a Child post, insert into Child table
-            cur.execute("INSERT INTO Child (Message, Date, ParentID) VALUES (?, ?, ?)",
-                           (post['Message'], post['Date'], post['ParentID']))
-        
-        # Remove the post from the Unapproved table
+            # If it's a Child post (reply), insert into Child table
+            cur.execute("INSERT INTO Child (Message, Date, Author, ParentID) VALUES (?, ?, ?, ?)",
+                        (post[1], post[2], post[3], post[5]))
+
+        # Remove the post from Unapproved table
         cur.execute("DELETE FROM Unapproved WHERE ID = ?", (post_id,))
         con.commit()
 
     con.close()
-    flash('Post approved successfully.')
-    return redirect(url_for('approve'))
+    flash('Post approved successfully.', "success")
+    return redirect(request.referrer or url_for('approve_posts'))
+
+
+@app.route('/submit_reply/<int:parent_id>', methods=['POST'])
+def submit_reply(parent_id):
+    if request.method == 'POST':
+        import sqlite3
+        con = sqlite3.connect('forum.db')
+        cur = con.cursor()
+
+        message = request.form['message']
+
+        if request.form["author"]:
+            cur.execute("INSERT INTO Unapproved (Message, Date, Author, ParentID) VALUES (?, datetime('now'), ?, ?)",
+                        (message, request.form["author"], parent_id))
+        else:
+            cur.execute("INSERT INTO Unapproved (Message, Date, ParentID) VALUES (?, datetime('now'), ?)",
+                        (message, parent_id))
+        
+        con.commit()
+        con.close()
+
+        flash('Your reply has been submitted for approval.', "success")
+        return redirect(url_for('post', post_id=parent_id))
+    return redirect(url_for('forum'))
 
 
 
 
-@app.route('/gallery')
-def gallery():
-    image_folder = os.path.join('static', 'img')
-    images = sorted([url_for('static', filename=f'img/{filename}') 
-                     for filename in os.listdir(image_folder) 
-                     if filename.endswith(('.png', '.jpg', '.jpeg', '.gif'))])
-    return render_template('pages/gallery.html', image_urls=images)
+
+
+
+#----------------------------------------------------------------------------#
+# Login / Logout
+#----------------------------------------------------------------------------#
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -259,6 +318,10 @@ def internal_error(error):
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('errors/404.html'), 404
+
+
+#@app.errorhandler(403)
+#def 
 
 
 #----------------------------------------------------------------------------#

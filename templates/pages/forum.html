@@ -61,13 +61,13 @@
   <div>
     <!-- Approve Posts Button (only visible when logged in and user is admin) -->
     {% if session.get('logged_in') %}
-    <a href="{{ url_for('approve') }}">
+    <a href="{{ url_for('approve_posts') }}">
       <button class="approve-button">Approve Posts</button>
     </a>
     {% endif %}
 
     <a href="{{ url_for('submit_post') }}">
-      <button class="add-post-button">Add New Post</button>
+      <button class="add-post-button">New Post</button>
     </a>
   </div>
 </div>

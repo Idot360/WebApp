@@ -30,7 +30,7 @@
           <hr class="post-divider">
           <div class="post-footer">
             <p><strong>Author:</strong> {{ post.author }} | <small>{{ post.date }}</small></p>
-            <form method="POST" action="{{ url_for('approve_post', post_id=post.id) }}">
+            <form method="POST" action="{{ url_for('approve', post_id=post.id) }}">
               <button class="approve-button" type="submit">Approve Reply</button>
             </form>
           </div>
@@ -44,7 +44,7 @@
           <hr class="post-divider">
           <div class="post-footer">
             <p><strong>Author:</strong> {{ post.author }} | <small>{{ post.date }}</small></p>
-            <form method="POST" action="{{ url_for('approve_post', post_id=post.id) }}">
+            <form method="POST" action="{{ url_for('approve', post_id=post.id) }}">
               <button class="approve-button" type="submit">Approve Post</button>
             </form>
           </div>
