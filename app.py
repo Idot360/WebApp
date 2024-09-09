@@ -4,7 +4,6 @@
 
 from flask import Flask, render_template, request, redirect, flash, url_for, session
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
-from flask_caching import Cache
 from forms import *
 from data import *
 from datetime import timedelta
@@ -18,10 +17,6 @@ import os
 app = Flask(__name__)
 app.config.from_object('config')
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
-app.config['CACHE_TYPE'] = 'simple'
-app.config['CACHE_DEFAULT_TIMEOUT'] = 180
-
-cache = Cache(app)
 
 
 @app.before_request
@@ -63,7 +58,6 @@ def about():
 
 
 @app.route('/gallery')
-@cache.cached(timeout=180)
 def gallery():
     images = image_fetch()
     return render_template('pages/gallery.html', image_urls=images)
