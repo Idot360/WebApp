@@ -1,6 +1,15 @@
-{% extends 'layouts/main.html' %}
-{% block content %}
-  <h1>Sorry ...</h1>
-  <p>There's nothing here!</p>
-  <p><a href="{{url_for('home')}}">Back</a></p>
-{% endblock %}
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 Not Found</title>
+<link type="text/css" rel="stylesheet" href="/static/css/errors.css" />
+</head>
+  
+<body>
+  <div class="error-page">
+    <h1 class="standout">404 Not Found</h1>
+      <p>The page you are looking for doesn’t exist.</p>
+      <a href="{{ url_for('home') }}" class="error-link">Go Back to Home</a>
+  </div>
+</body>
+  
