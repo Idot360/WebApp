@@ -4,13 +4,12 @@
 
 from flask import Flask, render_template, request, redirect, flash, url_for, session
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
+from flask_caching import Cache
 from forms import *
 from data import *
 from datetime import timedelta
 import time
 import os
-
-
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -19,6 +18,10 @@ import os
 app = Flask(__name__)
 app.config.from_object('config')
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+app.config['CACHE_TYPE'] = 'simple'
+app.config['CACHE_DEFAULT_TIMEOUT'] = 180
+
+cache = Cache(app)
 
 
 @app.before_request
@@ -60,6 +63,7 @@ def about():
 
 
 @app.route('/gallery')
+@cache.cached(timeout=180)
 def gallery():
     images = image_fetch()
     return render_template('pages/gallery.html', image_urls=images)
@@ -67,12 +71,7 @@ def gallery():
 
 @app.route('/forum')
 def forum():
-    import sqlite3
-    con = sqlite3.connect('mysite/forum.db')
-    cur = con.cursor()
-    cur.execute("SELECT * FROM Parent ORDER BY Date DESC")
-    parents = cur.fetchall()
-    con.close()
+    parents = forum_query("SELECT * FROM Parent ORDER BY Date DESC")
     return render_template('pages/forum.html', parents=parents)
 
 
@@ -83,43 +82,32 @@ def forum():
 
 @app.route('/post/<int:post_id>')
 def post(post_id):
-    import sqlite3
-    con = sqlite3.connect('mysite/forum.db')
-    cur = con.cursor()
-
-    # Fetch the parent post
-    cur.execute("SELECT * FROM Parent WHERE ID = ?", (post_id,))
-    parent = cur.fetchone()
+    parent = forum_query("SELECT * FROM Parent WHERE ID = ?", (post_id,))[0]
 
     if not parent:
         return "Post not found", 404
 
-    # Fetch all replies (Child posts) associated with this Parent post
-    cur.execute("SELECT ID, Message, Date, Author FROM Child WHERE ParentID = ? ORDER BY Date ASC", (post_id,))
-    children = cur.fetchall()
-    cur.execute("SELECT ID, Message, Date, Author FROM Unapproved WHERE ParentID = ? ORDER BY Date ASC", (post_id,))
-    children += [ x+tuple([False]) for x in cur.fetchall()]
+    children = forum_query("SELECT ID, Message, Date, Author FROM Child WHERE ParentID = ? ORDER BY Date DESC", (post_id,))
 
-    con.close()
-    return render_template('forms/post.html', parent=parent, children=children)
+    unapproved = [ x+tuple([False]) for x in 
+                 forum_query("SELECT ID, Message, Date, Author FROM Unapproved WHERE ParentID = ? ORDER BY Date DESC", (post_id,))]
+
+    return render_template('forms/post.html', parent=parent, children=children, unapproved=unapproved)
 
 
 @app.route('/submit_post', methods=['GET', 'POST'])
 def submit_post():
     if request.method == 'POST':
-        import sqlite3
-        con = sqlite3.connect('mysite/forum.db')
-        cur = con.cursor()
 
         title = request.form['title']
         message = request.form['message']
+        author = request.form['author']
         parent_id = request.form.get('parent_id')  # None if it's a new thread
+        if not author:
+            author = "None"
 
-        # Insert the post into the Unapproved table
-        cur.execute("INSERT INTO Unapproved (Title, Message, Date, ParentID) VALUES (?, ?, datetime('now'), ?)",
-                    (title, message, parent_id))
-        con.commit()
-        con.close()
+        forum_update("INSERT INTO Unapproved (Title, Message, Date, Author, ParentID) VALUES (?, ?, datetime('now'), ?, ?)",
+                    (title, message, author, parent_id))
 
         flash('Your post has been submitted for approval.', "success")
         return redirect(url_for('forum'))
@@ -129,17 +117,10 @@ def submit_post():
 @app.route('/delete_post/<int:post_id>', methods=['POST'])
 @login_required
 def delete_post(post_id):
-    import sqlite3
-    con = sqlite3.connect('mysite/forum.db')
-    cur = con.cursor()
 
-    # Delete the parent post and all its replies
-    cur.execute("DELETE FROM Parent WHERE ID = ?", (post_id,))
-    cur.execute("DELETE FROM Child WHERE ParentID = ?", (post_id,))
-
-    con.commit()
-    con.close()
-
+    forum_update("DELETE FROM Unapproved WHERE ID = ?", (post_id,))
+    forum_update("DELETE FROM Parent WHERE ID = ?", (post_id,))
+    
     flash('Post deleted successfully.', "success")
     return redirect(url_for('forum'))
 
@@ -147,17 +128,10 @@ def delete_post(post_id):
 @app.route('/delete_reply/<int:reply_id>', methods=['POST'])
 @login_required
 def delete_reply(reply_id):
-    import sqlite3
-    con = sqlite3.connect('mysite/forum.db')
-    cur = con.cursor()
 
-    # Delete the child post (reply)
-    cur.execute("DELETE FROM Child WHERE ID = ?", (reply_id,))
-    cur.execute("DELETE FROM Unapproved WHERE ID = ?", (reply_id,))
-
-    con.commit()
-    con.close()
-
+    forum_update("DELETE FROM Unapproved WHERE ID = ?", (reply_id,))
+    forum_update("DELETE FROM Child WHERE ID = ?", (reply_id,))
+    
     flash('Reply deleted successfully.', "success")
     return redirect(request.referrer or url_for('forum'))
 
@@ -165,46 +139,9 @@ def delete_reply(reply_id):
 @app.route('/approve_posts', methods=['GET', 'POST'])
 @login_required
 def approve_posts():
-    import sqlite3
-    conn = sqlite3.connect('mysite/forum.db')
-    cursor = conn.cursor()
 
-    # Fetch all unapproved posts
-    cursor.execute("""
-        SELECT Unapproved.ID, Unapproved.Message, Unapproved.Date, Unapproved.ParentID, Unapproved.Author,
-               Parent.Title, Parent.Message, Parent.Author, Parent.Date
-        FROM Unapproved
-        LEFT JOIN Parent ON Unapproved.ParentID = Parent.ID
-    """)
-
-    unapproved_posts_data = cursor.fetchall()
-    conn.close()
-
-    # Organize posts for the template
-    unapproved_posts = []
-    for post in unapproved_posts_data:
-        if post[5] is None:  # If ParentID is None, it's a parent post
-            unapproved_posts.append({
-                'id': post[0],
-                'message': post[1],
-                'date': post[2],
-                'author': post[4],
-                'is_child': False,
-                'title': "Untitled"  # Add a default title if missing
-            })
-        else:  # Child post (reply)
-            unapproved_posts.append({
-                'id': post[0],
-                'message': post[1],
-                'date': post[2],
-                'author': post[4],
-                'is_child': True,
-                'parent_title': post[5],
-                'parent_message': post[6],
-                'parent_author': post[7],
-                'parent_date': post[8]
-            })
-
+    unapproved_posts = approve_posts_filter()
+    
     return render_template('pages/approve.html', unapproved_posts=unapproved_posts)
 
 
@@ -212,29 +149,18 @@ def approve_posts():
 @login_required
 def approve(post_id):
 
-    import sqlite3
-    con = sqlite3.connect('mysite/forum.db')
-    cur = con.cursor()
-
-    # Fetch the post from Unapproved
-    cur.execute("SELECT * FROM Unapproved WHERE ID = ?", (post_id,))
-    post = cur.fetchone()
+    post = forum_query("SELECT * FROM Unapproved WHERE ID = ?", (post_id,))[0]
 
     if post:
         if post[5] is None:
-            # If it's a Parent post, insert into Parent table
-            cur.execute("INSERT INTO Parent (Title, Message, Date, Author) VALUES (?, ?, ?, ?)",
+            forum_update("INSERT INTO Parent (Title, Message, Date, Author) VALUES (?, ?, ?, ?)",
                         (post[4], post[1], post[2], post[3]))
         else:
-            # If it's a Child post (reply), insert into Child table
-            cur.execute("INSERT INTO Child (Message, Date, Author, ParentID) VALUES (?, ?, ?, ?)",
+            forum_update("INSERT INTO Child (Message, Date, Author, ParentID) VALUES (?, ?, ?, ?)",
                         (post[1], post[2], post[3], post[5]))
 
-        # Remove the post from Unapproved table
-        cur.execute("DELETE FROM Unapproved WHERE ID = ?", (post_id,))
-        con.commit()
+        forum_update("DELETE FROM Unapproved WHERE ID = ?", (post_id,))
 
-    con.close()
     flash('Post approved successfully.', "success")
     return redirect(request.referrer or url_for('approve_posts'))
 
@@ -242,21 +168,14 @@ def approve(post_id):
 @app.route('/submit_reply/<int:parent_id>', methods=['POST'])
 def submit_reply(parent_id):
     if request.method == 'POST':
-        import sqlite3
-        con = sqlite3.connect('mysite/forum.db')
-        cur = con.cursor()
 
         message = request.form['message']
-
-        if request.form["author"]:
-            cur.execute("INSERT INTO Unapproved (Message, Date, Author, ParentID) VALUES (?, datetime('now'), ?, ?)",
-                        (message, request.form["author"], parent_id))
-        else:
-            cur.execute("INSERT INTO Unapproved (Message, Date, ParentID) VALUES (?, datetime('now'), ?)",
-                        (message, parent_id))
-
-        con.commit()
-        con.close()
+        author = request.form["author"]
+        if not author:
+            author = "None"
+        
+        forum_update("INSERT INTO Unapproved (Message, Date, Author, ParentID) VALUES (?, datetime('now'), ?, ?)",
+                        (message, author, parent_id))
 
         flash('Your reply has been submitted for approval.', "success")
         return redirect(url_for('post', post_id=parent_id))
@@ -320,8 +239,14 @@ def not_found_error(error):
     return render_template('errors/404.html'), 404
 
 
-#@app.errorhandler(403)
-#def
+@app.errorhandler(403)
+def forbidden_error(error):
+    return render_template('errors/403.html'), 403
+
+
+@app.errorhandler(401)
+def forbidden_error(error):
+    return render_template('errors/401.html'), 401
 
 
 #----------------------------------------------------------------------------#

@@ -126,20 +126,13 @@
 
   <div class="replies-container">
     {% for child in children %}
-      <div class="child-post" {% if child[4] == False %} style="background-color: #fdefef" {% endif %}>
+      <div class="child-post">
         <p class="reply-message">{{ child[1] }}</p>
         <hr class="post-divider">
         <div class="post-footer">
           <p><strong>Author:</strong> {{ child[3] }} | <small>{{ child[2] }}</small></p>
           <div class="reply-actions">
             {% if session.get('logged_in') %}
-              {% if child[4] == False %}
-              <form method="POST" action="{{ url_for('approve', post_id=child[0]) }}" class="approve-reply-form">
-                <button type="submit" class="approve-button">
-                  <i class="fa fa-check"></i> <!-- Tick icon -->
-                </button>
-              </form>
-              {% endif %}
               <form method="POST" action="{{ url_for('delete_reply', reply_id=child[0]) }}" class="delete-reply-form">
                 <button type="submit" class="delete-button">
                   <i class="fa fa-trash"></i> <!-- Trashcan icon -->
@@ -150,6 +143,30 @@
         </div>
       </div>
     {% endfor %}
+    
+    {% if session.get('logged_in') %}
+    {% for child in unapproved %}
+      <div class="child-post" style="background-color: #fdefef">
+        <p class="reply-message">{{ child[1] }}</p>
+        <hr class="post-divider">
+        <div class="post-footer">
+          <p><strong>Author:</strong> {{ child[3] }} | <small>{{ child[2] }}</small></p>
+          <div class="reply-actions">
+              <form method="POST" action="{{ url_for('approve', post_id=child[0]) }}" class="approve-reply-form">
+                <button type="submit" class="approve-button">
+                  <i class="fa fa-check"></i> <!-- Tick icon -->
+                </button>
+              </form>
+              <form method="POST" action="{{ url_for('delete_reply', reply_id=child[0]) }}" class="delete-reply-form">
+                <button type="submit" class="delete-button">
+                  <i class="fa fa-trash"></i> <!-- Trashcan icon -->
+                </button>
+              </form>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    {% endif %}
   </div>
 
   <!-- Reply Form -->
