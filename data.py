@@ -15,8 +15,8 @@ def credentials():
 
 
 def image_fetch():
-    image_folder = os.path.join('static', 'img')
-    images = sorted([url_for('static', filename=f'img/{filename}') 
+    image_folder = os.path.join('static', 'img', 'gallery')
+    images = sorted([url_for('static', filename=f'img/gallery/{filename}') 
                      for filename in os.listdir(image_folder) 
                      if filename.endswith(('.png', '.jpg', '.jpeg', '.gif'))])
     return images

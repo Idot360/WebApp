@@ -34,12 +34,16 @@
       });
   }
 
-  // Send a heartbeat every 5 minutes
   setInterval(sendHeartbeat, 5 * 60 * 1000);
 
-  // Optionally, send a heartbeat on user activity
   document.addEventListener('onclick', sendHeartbeat);
   document.addEventListener('keydown', sendHeartbeat);
+
+
+  document.addEventListener("DOMContentLoaded", function() {
+    var navbarHeight = document.getElementById("head").offsetHeight;
+    document.getElementById("content").style.marginTop = navbarHeight + "px";
+  });
 </script>
 
 </head>

@@ -1,10 +1,220 @@
+<style>
+.map-container {
+  text-align: center;
+  padding: 50px 0;
+}
+
+.map-container h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.map-embed {
+  position: relative;
+  width: 80%;      
+  max-width: 1200px; 
+  padding-bottom: 56.25%; 
+  height: 0;       
+  margin: 0 auto;  
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.map-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+@media (max-width: 768px) {
+  .map-container h2 {
+    font-size: 28px;
+  }
+
+  .map-embed {
+    padding-bottom: 75%; 
+  }
+}
+
+@media (max-width: 480px) {
+  .map-container h2 {
+    font-size: 24px;
+  }
+
+  .map-embed {
+    padding-bottom: 100%; 
+  }
+}
+
+.home-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.welcome-section {
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #e523f7, #50fdee);
+    border-radius: 12px;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 2s ease-in-out;
+    margin-bottom: 40px;
+}
+
+.welcome-section h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.welcome-section p {
+    font-size: 1.5em;
+    margin-bottom: 30px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.about-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #f0f7ff;  
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.about-text {
+    flex: 1;
+    padding: 20px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.about-image {
+    flex: 1;
+    text-align: center;
+}
+
+.about-image img {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
+
+/* Alternating image placement */
+.left-image {
+    order: -1;
+    padding-right: 20px;
+}
+
+.right-image {
+    padding-left: 20px;
+}
+
+.about-image img:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .about-section {
+        flex-direction: column;
+    }
+
+    .about-text, .about-image {
+        padding: 0;
+        text-align: center;
+    }
+
+    .left-image, .right-image {
+        order: 0;
+    }
+}
+</style>
+
+
 {% extends 'layouts/main.html' %}
 {% block title %}Home{% endblock %}
 {% block content %}
 
-<div class="page-header">
-  <h1>Welcome to your <span class="standout">Next Big Thing</span></h1>
+<div class="home-container">
+  <div class="welcome-section">
+    <h1>Welcome to NJC Table Tennis Club</h1>
+  </div>
+
+<div class="about-section">
+    <div class="about-image left-image">
+        <img src="{{ url_for('static', filename='img/home/malong.jpeg') }}" alt="Player 1">
+    </div>
+    <div class="about-text">
+        <p>
+            At NJC Table Tennis Club, we believe in fun over competition. Whether you’re new to table tennis or a seasoned player, 
+            this is the place to enjoy the game, improve your skills, and hang out with friends.
+        </p>
+    </div>
 </div>
-<p class="lead">This is the boilerplate template for Flask, originally written by RealPython, and updated for 2022 by <code>aaronleetw</code>.</p>
+
+<!-- Second Section: Text on the left, image on the right -->
+<div class="about-section">
+    <div class="about-text">
+        <p>
+            Join us for a relaxed and enjoyable table tennis experience. Our club is open to all levels and focuses on teamwork, 
+            personal growth, and having a great time.
+        </p>
+    </div>
+    <div class="about-image right-image">
+        <img src="{{ url_for('static', filename='img/home/sunyingsha.jpeg') }}" alt="Player 2">
+    </div>
+</div>
+
+<!-- Third Section: Image on the left, text on the right -->
+<div class="about-section">
+    <div class="about-image left-image">
+        <img src="{{ url_for('static', filename='img/home/felixlebrun.jpeg') }}" alt="Player 3">
+    </div>
+    <div class="about-text">
+        <p>
+            The relaxed atmosphere makes it easy for members to bond while learning the intricacies of table tennis at their own pace.
+        </p>
+    </div>
+</div>
+
+</div>
+
+<section class="map-container">
+    <h2>Where to Purchase Equipment</h2>
+    <div class="map-embed">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7252521570626!2d103.84382697394153!3d1.341203298646112!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da176a22fd3775%3A0x5bc3ef191906273f!2sSin%20Ten%20Sports%20Trading!5e0!3m2!1sen!2ssg!4v1725890718766!5m2!1sen!2ssg"
+        width="600"
+        height="450"
+        style="border:0;"
+        allowfullscreen="True"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+</section>
+
+
 
 {% endblock %}

@@ -127,7 +127,7 @@
               <form method="POST" action="{{ url_for('approve', post_id=post.id) }}">
                 <button class="approve-button" type="submit">Approve Reply</button>
               </form>
-              <form method="POST" action="{{ url_for('delete_post', post_id=post.id) }}" class="delete-post-form">
+              <form method="POST" action="{{ url_for('delete_reply', reply_id=post.id) }}" class="delete-post-form">
                 <button type="submit" class="delete-button">
                   <i class="fa fa-trash"></i> <!-- Trashcan icon -->
                 </button>

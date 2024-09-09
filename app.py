@@ -118,24 +118,19 @@ def submit_post():
 @login_required
 def delete_post(post_id):
 
-    forum_update("DELETE FROM Parent WHERE ID = ?", (post_id,))
-    forum_update("DELETE FROM Child WHERE ParentID = ?", (post_id,))
     forum_update("DELETE FROM Unapproved WHERE ID = ?", (post_id,))
+    forum_update("DELETE FROM Parent WHERE ID = ?", (post_id,))
     
     flash('Post deleted successfully.', "success")
-
-    try:
-        return redirect(request.referrer)
-    except:
-        return redirect(url_for('forum'))
+    return redirect(url_for('forum'))
 
 
 @app.route('/delete_reply/<int:reply_id>', methods=['POST'])
 @login_required
 def delete_reply(reply_id):
 
-    forum_update("DELETE FROM Child WHERE ID = ?", (reply_id,))
     forum_update("DELETE FROM Unapproved WHERE ID = ?", (reply_id,))
+    forum_update("DELETE FROM Child WHERE ID = ?", (reply_id,))
     
     flash('Reply deleted successfully.', "success")
     return redirect(request.referrer or url_for('forum'))
