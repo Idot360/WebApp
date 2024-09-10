@@ -1,0 +1,189 @@
+<style>
+
+.replies-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-post-form, .delete-reply-form, .approve-reply-form {
+  display: inline;
+  margin-left: 10px;
+}
+
+.delete-button, .approve-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  font-size: 18px;
+  padding: 5px;
+  transition: color 0.3s ease;
+}
+
+.delete-button:hover, .approve-button:hover {
+  color: #d9534f; 
+}
+
+.approve-button:hover {
+  color: #28a745; 
+}
+
+
+.unapproved-reply {
+  background-color: #fff5f5; 
+}
+
+.reply-message {
+  margin-bottom: 10px;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-divider {
+  border-top: 1px solid #e0e0e0;
+  margin: 10px 0;
+}
+
+.reply-actions {
+  display: flex;
+  align-items: center;
+}
+
+
+.reply-form input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.reply-form textarea {
+  width: 100%;
+  height: 120px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.reply-button {
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.reply-button:hover {
+  background-color: #218838;
+}
+</style>
+
+
+{% extends 'layouts/main.html' %}
+{% block title %}Post - {{ parent[1] }}{% endblock %}
+{% block content %}
+
+<div class="post-container">
+  
+  <div class="parent-post">
+    <h1 class="post-title">{{ parent[1] }}</h1>
+    <p class="post-message">{{ parent[2] }}</p>
+    <hr class="post-divider">
+    <div class="post-footer">
+      <p><strong>Author:</strong> {{ parent[4] }} | <small>{{ parent[3] }}</small></p>
+      {% if session.get('logged_in') %}
+      <form method="POST" action="{{ url_for('delete_post', post_id=parent[0]) }}" class="delete-post-form">
+        <button type="submit" class="delete-button">
+          <i class="fa fa-trash"></i> 
+        </button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if children != [] %}
+  
+  <div class="replies-header-container">
+    <h2 class="replies-header">Replies</h2>
+    {% if session.get('logged_in') %}
+    <form method="POST" action="{{ url_for('delete_post', post_id=parent[0]) }}" class="delete-post-form">
+    </form>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="replies-container">
+    {% for child in children %}
+      <div class="child-post">
+        <p class="reply-message">{{ child[1] }}</p>
+        <hr class="post-divider">
+        <div class="post-footer">
+          <p><strong>Author:</strong> {{ child[3] }} | <small>{{ child[2] }}</small></p>
+          <div class="reply-actions">
+            {% if session.get('logged_in') %}
+              <form method="POST" action="{{ url_for('delete_reply', reply_id=child[0]) }}" class="delete-reply-form">
+                <button type="submit" class="delete-button">
+                  <i class="fa fa-trash"></i> 
+                </button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    
+    {% if session.get('logged_in') %}
+    {% for child in unapproved %}
+      <div class="child-post" style="background-color: #fdefef">
+        <p class="reply-message">{{ child[1] }}</p>
+        <hr class="post-divider">
+        <div class="post-footer">
+          <p><strong>Author:</strong> {{ child[3] }} | <small>{{ child[2] }}</small></p>
+          <div class="reply-actions">
+              <form method="POST" action="{{ url_for('approve', post_id=child[0]) }}" class="approve-reply-form">
+                <button type="submit" class="approve-button">
+                  <i class="fa fa-check"></i> 
+                </button>
+              </form>
+              <form method="POST" action="{{ url_for('delete_reply', reply_id=child[0]) }}" class="delete-reply-form">
+                <button type="submit" class="delete-button">
+                  <i class="fa fa-trash"></i> 
+                </button>
+              </form>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+
+  
+  <h3 class="reply-form-header">Reply</h3>
+  <form method="POST" action="{{ url_for('submit_reply', parent_id=parent[0]) }}" class="reply-form">
+    
+    <input type="text" name="author" placeholder="Name (Optional)">
+    
+    
+    <textarea name="message" placeholder="Write your reply here..." required></textarea>
+    
+    
+    <input type="hidden" name="parent_id" value="{{ parent[0] }}">
+    
+    
+    <button type="submit" class="reply-button">Reply</button>
+  </form>
+</div>
+
+{% endblock %}

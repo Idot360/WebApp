@@ -20,14 +20,218 @@ footer svg {
   width: 30px;
   height: 30px;
 }
-/* Main elements end */
+
+#head {
+  position: fixed;
+  display: table;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 6px 0 rgba(0,0,0,.12), inset 0 -1px 0 0 #dadce0;
+  z-index: 1;
+  background-color: white;
+}
 
 
-/*****************************************************************************
- * Various other styles
- ****************************************************************************/
 
-/* Various other styles end */
+.flash-container {
+  margin: 15px auto;
+  padding: 10px;
+  width: 80%;
+  border-radius: 5px;
+  font-family: Arial, sans-serif;
+  font-size: x-large;
+  font-weight: bold;
+  text-align: center;
+  filter: contrast(1.5);
+}
+.flash-success {
+  background-color: #9bfdb2;
+  color: #155724;
+  border: 1px solid #d5d7d6;
+}
+.flash-error {
+  background-color: #ff7575;
+  color: #721c24;
+  border: 1px solid #dbd9da;
+}
+.flash-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+.flash-info {
+  background-color: #a9a9a9;
+  color: #252525;
+  border: 1px solid #c1c1c1;
+}
+
+#credit {
+  font-size: 1.5em;
+  color: #e523f7;
+  text-decoration: none;
+  font-family: 'Pacifico', cursive;
+}
+
+.parent-post {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  background-color: #f4f4f9;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+  position: relative;
+}
+
+.parent-post:hover {
+  background-color: #eaeaf7;
+}
+
+
+.parent-post h3 {
+  margin: 0 0 10px;
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 10px;
+  background-color: #f0f0ff; 
+  border-radius: 4px;
+}
+
+
+.parent-post p {
+  margin: 0 0 4px 0; 
+}
+
+.parent-post p small {
+  color: #888;
+  font-size: 12px;
+}
+
+
+.parent-post a button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.parent-post a button:hover {
+  background-color: #0056b3;
+}
+
+
+.child-post {
+  margin-top: 10px;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd; 
+  border-radius: 4px;
+}
+
+.child-post p {
+  margin: 0;
+}
+
+.child-post p small {
+  color: #888;
+  font-size: 12px;
+}
+
+
+form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+form button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #218838;
+}
+
+.unapproved-posts {
+  padding: 10px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.unapproved-post {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: #fff8e1; 
+}
+
+.post-type {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.parent-post, .child-post {
+  background-color: #f0f0ff;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
+
+.post-divider {
+  margin: 10px 0;
+  border: 0;
+  height: 1px;
+  background: #787878; 
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-footer p {
+  margin: 0;
+  color: #888;
+  font-size: 12px;
+}
+
+.approve-button {
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 15px; 
+}
+
+.approve-button:hover {
+  background-color: #218838;
+}
+
+
 .standout {
   text-transform: uppercase;
 	background: linear-gradient( 109.6deg,  rgba(61,245,167,1) 11.2%, rgba(9,111,224,1) 91.1% );

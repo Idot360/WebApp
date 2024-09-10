@@ -1,0 +1,51 @@
+
+.error-page {
+    text-align: center;
+    margin-top: 100px;
+    background-color: #f9f9f9;
+    padding: 50px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 100px auto;
+}
+
+.error-page h1 {
+    font-size: 60px;
+    color: #dc3545;
+    margin-bottom: 20px;
+}
+
+.error-page p {
+    font-size: 22px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.error-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    margin: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.error-link:hover {
+    background-color: #0056b3;
+}
+
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+
+h1.standout {
+    background: linear-gradient(135deg, #f64f59, #c471ed, #12c2e9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

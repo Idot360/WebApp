@@ -1,0 +1,163 @@
+<style>
+
+.replies-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-post-form, .delete-reply-form, .approve-reply-form {
+  display: inline;
+  margin-left: 10px;
+}
+
+.delete-button, .approve-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  font-size: 18px;
+  padding: 5px;
+  transition: color 0.3s ease;
+}
+
+.delete-button:hover, .approve-button:hover {
+  color: #d9534f; 
+}
+
+.approve-button:hover {
+  color: #28a745; 
+}
+
+
+.unapproved-reply {
+  background-color: #fff5f5; 
+}
+
+.reply-message {
+  margin-bottom: 10px;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-divider {
+  border-top: 1px solid #e0e0e0;
+  margin: 10px 0;
+}
+
+.reply-actions {
+  display: flex;
+  align-items: center;
+}
+
+.reply-form input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.reply-form textarea {
+  width: 100%;
+  height: 120px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.reply-button {
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.reply-button:hover {
+  background-color: #218838;
+}
+</style>
+
+
+{% extends 'layouts/main.html' %}
+{% block title %}Approve Posts{% endblock %}
+{% block content %}
+
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+  <h1><span class="standout">Approve Posts</span></h1>
+</div>
+
+<p class="lead">Review and approve pending posts below.</p>
+
+<div class="unapproved-posts">
+  {% for post in unapproved_posts %}
+    <div class="unapproved-post">
+      
+      {% if post.is_child %}
+        <h4 class="post-type">Reply to:</h4>
+        <div class="parent-post">
+          <h5>{{ post.parent_title }}</h5>
+          <p>{{ post.parent_message }}</p>
+          
+          <hr class="post-divider">
+          <div class="post-footer">
+            <p><strong>Author:</strong> {{ post.parent_author }} | <small>{{ post.parent_date }}</small></p>
+          </div>
+        </div>
+
+        <h4 class="post-type">Unapproved Reply:</h4>
+        <div class="child-post">
+          <p>{{ post.message }}</p>
+          <hr class="post-divider">
+          <div class="post-footer">
+            <p><strong>Author:</strong> {{ post.author }} | <small>{{ post.date }}</small></p>
+            <div class="reply-actions">
+              <form method="POST" action="{{ url_for('approve', post_id=post.id) }}">
+                <button class="approve-button" type="submit">Approve Reply</button>
+              </form>
+              <form method="POST" action="{{ url_for('delete_reply', reply_id=post.id) }}" class="delete-post-form">
+                <button type="submit" class="delete-button">
+                  <i class="fa fa-trash"></i> 
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        
+        <h4 class="post-type">Unapproved Post:</h4>
+        <div class="parent-post">
+          <h5>{{ post.title }}</h5>
+          <p>{{ post.message }}</p>
+          <hr class="post-divider">
+          <div class="post-footer">
+            <p><strong>Author:</strong> {{ post.author }} | <small>{{ post.date }}</small></p>
+            <div class="reply-actions">
+              <form method="POST" action="{{ url_for('approve', post_id=post.id) }}">
+                <button class="approve-button" type="submit">Approve Post</button>
+              </form>
+              <form method="POST" action="{{ url_for('delete_post', post_id=post.id) }}" class="delete-post-form">
+                <button type="submit" class="delete-button">
+                  <i class="fa fa-trash"></i> 
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

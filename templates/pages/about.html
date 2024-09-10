@@ -1,0 +1,226 @@
+<head>
+  <style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    line-height: 1.6;
+}
+h1, h2 {
+    color: #2c3e50;
+}
+code {
+  background-color: #f9f9f9;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 1.1em;
+}
+.formula {
+  font-size: 1.2em;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+.example {
+  background-color: #e8f4f8;
+  padding: 10px;
+  border-left: 4px solid #3498db;
+  margin-bottom: 20px;
+}
+
+.lead {
+  font-size: 1.5em;
+  font-style: italic;
+}
+
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+}
+
+.about-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #f0f7ff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.about-section h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.about-section p {
+    font-size: 1.2em;
+    color: #555;
+    text-align: center;
+}
+
+.about-social {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.about-social h3 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+.social-link {
+    font-size: 3.5em;
+    border-radius: 20px;
+    font-weight: bold;
+    font-family: 'Pacifico', cursive;
+    padding: 0.5em 0.2em 0.8em 0.5em;
+    background: linear-gradient(109.6deg, rgba(61,245,167,1) 11.2%, rgba(9,111,224,1) 91.1%);
+    background-clip: text;
+    -webkit-background-clip: text; 
+    color: transparent;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    color: transparent;
+    background: 
+      linear-gradient(to right, rgba(255,0,0,1) 0%, rgba(255,154,0,1) 10%, rgba(208,222,33,1) 20%, rgba(79,220,74,1) 30%, rgba(63,218,216,1) 40%, rgba(47,201,226,1) 50%, rgba(28,127,238,1) 60%, rgba(95,21,242,1) 70%, rgba(186,12,248,1) 80%, rgba(251,7,217,1) 90%, rgba(255,0,0,1) 100%) 
+      0 0/200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text; 
+    animation: a 2s linear infinite;
+}
+
+@keyframes a {
+    to {
+        background-position: -200% 0;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .about-section h2 {
+        font-size: 1.8em;
+    }
+
+    .about-section p {
+        font-size: 1.1em;
+    }
+
+    .social-link {
+        font-size: 1.3em;
+    }
+}
+  </style>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+{% extends 'layouts/main.html' %}
+{% block title %}About{% endblock %}
+{% block content %}
+
+
+<body>
+
+  <div class="page-header">
+    <h1><span class="standout">About</span></h1>
+  </div>
+  <p class="lead">“Victory requires payment in advance”</p>
+
+  <div class="about-container">
+
+    <section class="about-section">
+        <h2>Our Mission</h2>
+        <p>
+            The NJC Table Tennis team aims to inculcate in our members valuable life skills and sound values of resilience and confidence,
+            through the physical and mental challenges of sports. Comprising passionate players with a wide range of abilities, we are committed
+            as a team to bring out the best in one another and nurture individual proficiency regardless of experience and skills.
+        </p>
+    </section>
+
+    <section class="about-section">
+        <h2>Growth</h2>
+        <p>
+            Besides participating in competitions such as the National Schools Games A division to hone technical skills and gain exposure, we
+            also believe in developing empathy and humility by seeking to create a positive impact on others through Values-In-Action (VIA)
+            opportunities.
+        </p>
+    </section>
+
+    <section class="about-section">
+        <h2>Team Spirit</h2>
+        <p>
+            The NJC Table Tennis team is where every member supports each other in striving for excellence, and where bonds of friendship are
+            forged through sports.
+        </p>
+    </section>
+
+    <section class="about-social">
+      <a href="https://www.instagram.com/njctabletennis/" class="social-link" target="_blank">
+          @njctabletennis
+      </a>
+  </section>
+</div>
+
+<h1>Random Formulas</h1>
+<hr class="post-divider">
+
+    <h2>Fourier Series</h2>
+    <p>The Fourier series is used to express a periodic function as a sum of sine and cosine functions.</p>
+
+    <div class="formula">
+        <p>For a function \(f(x)\) defined on \([-L, L]\), the Fourier series is given by:</p>
+        <p>
+            \(f(x) = \frac{a_0}{2} + \sum_{n=1}^{\infty} \left( a_n \cos \left(\frac{n\pi x}{L}\right) + b_n \sin \left(\frac{n\pi x}{L}\right) \right)\)
+        </p>
+        <p>where:</p>
+        <ul>
+            <li>\(a_0 = \frac{1}{L} \int_{-L}^{L} f(x) \, dx\)</li>
+            <li>\(a_n = \frac{1}{L} \int_{-L}^{L} f(x) \cos\left(\frac{n\pi x}{L}\right) dx\)</li>
+            <li>\(b_n = \frac{1}{L} \int_{-L}^{L} f(x) \sin\left(\frac{n\pi x}{L}\right) dx\)</li>
+        </ul>
+    </div>
+
+    <div class="example">
+        <h3>Example: Fourier Series of a Square Wave</h3>
+        <p>Consider a square wave \(f(x)\) defined on \([- \pi, \pi]\):</p>
+        <p>\[
+        f(x) = \begin{cases} 
+        1 & \text{if } -\pi < x < 0 \\
+        -1 & \text{if } 0 < x < \pi 
+        \end{cases}
+        \]</p>
+        <p>The Fourier series for this square wave is:</p>
+        <p>\(f(x) = \frac{4}{\pi} \sum_{n=1,3,5,\ldots}^{\infty} \frac{1}{n} \sin(nx)\)</p>
+    </div>
+
+    <h2>Multivariable Calculus</h2>
+    <p>Multivariable calculus deals with functions of multiple variables and includes concepts like partial derivatives, gradients, and multiple integrals.</p>
+
+    <div class="formula">
+        <h3>Partial Derivatives</h3>
+        <p>If \(f(x, y)\) is a function of two variables, the partial derivatives are:</p>
+        <p>\(\frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h, y) - f(x, y)}{h}\)</p>
+        <p>\(\frac{\partial f}{\partial y} = \lim_{h \to 0} \frac{f(x, y+h) - f(x, y)}{h}\)</p>
+    </div>
+
+    <div class="formula">
+        <h3>Gradient</h3>
+        <p>The gradient of a scalar function \(f(x, y, z)\) is a vector that points in the direction of the steepest ascent:</p>
+        <p>\(\nabla f = \left( \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \right)\)</p>
+    </div>
+
+    <div class="example">
+        <h3>Example: Gradient of a Function</h3>
+        <p>For the function \(f(x, y) = 3x^2 + 4y^2\), the gradient is:</p>
+        <p>\(\nabla f = (6x, 8y)\)</p>
+    </div>
+
+</body>
+{% endblock %}
