@@ -28,6 +28,10 @@ Project Structure
   │   │   │   └── 
   │   │   └── home
   │   │   │   └── 
+  │   │   └── meme
+  │   │       └── 
+  │   └── js
+  │       └── konami.js
   └── templates
       ├── errors
       │   ├── 401.html
@@ -45,6 +49,7 @@ Project Structure
           ├── gallery.html
           ├── approveabout.html
           ├── about.html
+          ├── secret.html
           └── home.html
   ```
 
