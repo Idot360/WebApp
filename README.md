@@ -1,5 +1,6 @@
 The version compatable with pythonanywhere. Otherwise, it's the same.
 Access at https://evan1.pythonanywhere.com/
+Login - Username:root; Password:admin;
 
 Project Structure
 --------
