@@ -242,8 +242,8 @@ def logout():
 
 @app.route('/heartbeat', methods=['POST'])
 def heartbeat():
-    session.modified = True  # Refresh session timeout
-    return '', 204  # Return no content
+    session.modified = True  
+    return '', 204  
 
 # Error handlers ------------------------------------------------------------#
 

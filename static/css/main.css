@@ -88,20 +88,20 @@ footer svg {
   background-color: #eaeaf7;
 }
 
-/* Post title styling with highlighted background */
+
 .parent-post h3 {
   margin: 0 0 10px;
   color: #333;
   font-size: 24px;
   font-weight: bold;
   padding: 10px;
-  background-color: #f0f0ff; /* Slightly highlighted background */
+  background-color: #f0f0ff; 
   border-radius: 4px;
 }
 
-/* Post author and date styling */
+
 .parent-post p {
-  margin: 0 0 4px 0; /* Reduced space between author and date */
+  margin: 0 0 4px 0; 
 }
 
 .parent-post p small {
@@ -109,7 +109,7 @@ footer svg {
   font-size: 12px;
 }
 
-/* Button to view posts */
+
 .parent-post a button {
   padding: 10px 15px;
   border: none;
@@ -125,14 +125,14 @@ footer svg {
   background-color: #0056b3;
 }
 
-/* Styling for replies (child posts) */
+
 .child-post {
   margin-top: 10px;
   padding-left: 20px;
   margin-bottom: 10px;
   padding: 10px;
   background-color: #f9f9f9;
-  border: 1px solid #ddd; /* Border to separate replies */
+  border: 1px solid #ddd; 
   border-radius: 4px;
 }
 
@@ -145,7 +145,7 @@ footer svg {
   font-size: 12px;
 }
 
-/* Form styling */
+
 form textarea {
   width: 100%;
   padding: 10px;
@@ -180,7 +180,7 @@ form button:hover {
   padding: 15px;
   margin-bottom: 20px;
   border-radius: 5px;
-  background-color: #fff8e1; /* Light background for unapproved posts */
+  background-color: #fff8e1; 
 }
 
 .post-type {
@@ -201,7 +201,7 @@ form button:hover {
   margin: 10px 0;
   border: 0;
   height: 1px;
-  background: #787878; /* Faint line divider */
+  background: #787878; 
 }
 
 .post-footer {
@@ -224,7 +224,7 @@ form button:hover {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  margin-left: 15px; /* Slightly moved to the left */
+  margin-left: 15px; 
 }
 
 .approve-button:hover {

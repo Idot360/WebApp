@@ -1,5 +1,5 @@
 <style>
-/* Approve button styling */
+
 .approve-button {
   padding: 10px 15px;
   background-color: #ff7f50;
@@ -16,7 +16,7 @@
   background-color: #e67300;
 }
 
-/* Add New Post button styling */
+
 .add-post-button {
   padding: 10px 15px;
   background-color: #28a745;
@@ -26,26 +26,26 @@
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s ease;
-  margin-left: 10px; /* Align to the approve button */
+  margin-left: 10px; 
 }
 
 .add-post-button:hover {
   background-color: #218838;
 }
 
-/* Posts grid styling */
+
 .posts {
   display: grid;
-  grid-template-columns: 1fr; /* Single column by default */
-  gap: 20px; /* Increased gap for better spacing */
+  grid-template-columns: 1fr; 
+  gap: 20px; 
   padding: 10px;
-  max-width: 1200px; /* Reduced max-width to make posts smaller */
+  max-width: 1200px; 
   margin: auto;
 }
 
-@media (min-width: 992px) { /* Laptop breakpoint */
+@media (min-width: 992px) { 
   .posts {
-    grid-template-columns: repeat(2, 1fr); /* Two columns on laptop screens */
+    grid-template-columns: repeat(2, 1fr); 
   }
 }
 </style>
@@ -59,7 +59,7 @@
   <h1><span class="standout">Forum</span></h1>
 
   <div>
-    <!-- Approve Posts Button (only visible when logged in and user is admin) -->
+    
     {% if session.get('logged_in') %}
     <a href="{{ url_for('approve_posts') }}">
       <button class="approve-button">Approve Posts</button>

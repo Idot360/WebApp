@@ -1,5 +1,5 @@
 <style>
-/* Styling for the post submission form */
+
 .submit-form {
     max-width: 600px;
     margin: 50px auto;
@@ -60,19 +60,19 @@
 <div class="submit-form">
     <h2 class="standout">Submit a New Post</h2>
     <form action="/submit_post" method="POST">
-        <!-- Title field -->
+        
         <label for="title">Post Title:</label>
         <input type="text" id="title" name="title" placeholder="Title" required>
         
-        <!-- Message field -->
+        
         <label for="message">Message Content:</label>
         <textarea id="message" name="message" rows="6" placeholder="Write your post content here..." required></textarea>
 
-        <!-- Optional Author field -->
+        
         <label for="author">Name:</label>
         <input type="text" id="author" name="author" placeholder="Name (optional)">
         
-        <!-- Submit button -->
+        
         <button type="submit">Submit Post</button>
     </form>
 </div>
