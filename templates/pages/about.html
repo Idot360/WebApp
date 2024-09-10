@@ -27,6 +27,92 @@ code {
   border-left: 4px solid #3498db;
   margin-bottom: 20px;
 }
+
+.lead {
+  font-size: 1.5em;
+  font-style: italic;
+}
+
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+}
+
+.about-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #f0f7ff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.about-section h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.about-section p {
+    font-size: 1.2em;
+    color: #555;
+    text-align: center;
+}
+
+.about-social {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.about-social h3 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+.social-link {
+  font-size: 3.5em;
+  border-radius: 20px;
+  font-weight: bold;
+  font-family: 'Pacifico', cursive;
+  padding: 0.5em 0.2em 0.8em 0.5em;
+  background: linear-gradient( 109.6deg,  rgba(61,245,167,1) 11.2%, rgba(9,111,224,1) 91.1% );
+  background-clip: text;
+  -webkit-background-clip: text; 
+  color: transparent;
+}
+
+.social-link:hover {
+  color: transparent;
+  background: 
+   linear-gradient(to right, rgba(255,0,0,1) 0%, rgba(255,154,0,1) 10%, rgba(208,222,33,1) 20%, rgba(79,220,74,1) 30%, rgba(63,218,216,1) 40%, rgba(47,201,226,1) 50%, rgba(28,127,238,1) 60%, rgba(95,21,242,1) 70%, rgba(186,12,248,1) 80%, rgba(251,7,217,1) 90%, rgba(255,0,0,1) 100%) 
+   0 0/200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text; 
+  animation: a 2s linear infinite;
+}
+
+/* The rainbow wave animation */
+@keyframes a {
+  to {background-position:0 -200%}
+}
+
+@media (max-width: 768px) {
+
+    .about-section h2 {
+        font-size: 1.8em;
+    }
+
+    .about-section p {
+        font-size: 1.1em;
+    }
+
+    .social-link {
+        font-size: 1.3em;
+    }
+}
   </style>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -36,11 +122,48 @@ code {
 {% block title %}About{% endblock %}
 {% block content %}
 
+
 <body>
-<div class="page-header">
-  <h1><span class="standout">About</span></h1>
+
+  <div class="page-header">
+    <h1><span class="standout">About</span></h1>
+  </div>
+  <p class="lead">“Victory requires payment in advance”</p>
+
+  <div class="about-container">
+
+    <section class="about-section">
+        <h2>Our Mission</h2>
+        <p>
+            The NJC Table Tennis team aims to inculcate in our members valuable life skills and sound values of resilience and confidence,
+            through the physical and mental challenges of sports. Comprising passionate players with a wide range of abilities, we are committed
+            as a team to bring out the best in one another and nurture individual proficiency regardless of experience and skills.
+        </p>
+    </section>
+
+    <section class="about-section">
+        <h2>Growth</h2>
+        <p>
+            Besides participating in competitions such as the National Schools Games A division to hone technical skills and gain exposure, we
+            also believe in developing empathy and humility by seeking to create a positive impact on others through Values-In-Action (VIA)
+            opportunities.
+        </p>
+    </section>
+
+    <section class="about-section">
+        <h2>Team Spirit</h2>
+        <p>
+            The NJC Table Tennis team is where every member supports each other in striving for excellence, and where bonds of friendship are
+            forged through sports.
+        </p>
+    </section>
+
+    <section class="about-social">
+      <a href="https://www.instagram.com/njctabletennis/" class="social-link" target="_blank">
+          @njctabletennis
+      </a>
+  </section>
 </div>
-<p class="lead">Don't really have much to put here. What would even be in the about page of this site anyway.</p>
 
 <h1>Random Formulas</h1>
 <hr class="post-divider">

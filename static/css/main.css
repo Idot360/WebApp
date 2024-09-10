@@ -67,8 +67,10 @@ footer svg {
 }
 
 #credit {
-  font-family: cursive;
-  color: #ff7575;
+  font-size: 1.5em;
+  color: #e523f7;
+  text-decoration: none;
+  font-family: 'Pacifico', cursive;
 }
 
 .parent-post {
