@@ -2,8 +2,9 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, redirect, flash, url_for, session
+from flask import Flask, render_template, request, redirect, flash, url_for, session, abort, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
+from functools import wraps
 from forms import *
 from data import *
 from datetime import timedelta
@@ -16,13 +17,16 @@ import os
 
 app = Flask(__name__)
 app.config.from_object('config')
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+KEY = False
 
 
 @app.before_request
-def make_session_permanent():
-    session.permanent = True
-    session.modified = True  # To refresh the session timeout on each request
+def create_tables():
+    print('''\n\nlogged out\n\n''')
+    logout_user()
+    session['logged_in'] = False
+    app.before_request_funcs[None].remove(create_tables)
+
 
 #----------------------------------------------------------------------------#
 # Login.
@@ -67,6 +71,26 @@ def gallery():
 def forum():
     parents = forum_query("SELECT * FROM Parent ORDER BY Date DESC")
     return render_template('pages/forum.html', parents=parents)
+
+
+@app.route('/secret')
+def secret():
+    global KEY
+    if not KEY:
+        abort(403)
+
+    KEY = False
+    return render_template('pages/secret.html')
+
+
+@app.route('/trigger', methods=['GET', 'POST'])
+def trigger():
+    global KEY
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        abort(403)
+    
+    KEY = True
+    return jsonify({'redirect': url_for('secret')})
 
 
 #----------------------------------------------------------------------------#
@@ -218,8 +242,8 @@ def logout():
 
 @app.route('/heartbeat', methods=['POST'])
 def heartbeat():
-    session.modified = True  # Refresh session timeout
-    return '', 204  # Return no content
+    session.modified = True  
+    return '', 204  
 
 # Error handlers ------------------------------------------------------------#
 

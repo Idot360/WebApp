@@ -1,4 +1,4 @@
-/* Enhanced Error page styling */
+
 .error-page {
     text-align: center;
     margin-top: 100px;
@@ -38,12 +38,12 @@
     background-color: #0056b3;
 }
 
-/* Add background gradient to make the pages pop */
+
 body {
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
-/* Standout gradient title for each error */
+
 h1.standout {
     background: linear-gradient(135deg, #f64f59, #c471ed, #12c2e9);
     -webkit-background-clip: text;

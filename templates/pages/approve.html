@@ -1,5 +1,5 @@
 <style>
-/* Container and layout adjustments */
+
 .replies-header-container {
   display: flex;
   justify-content: space-between;
@@ -22,16 +22,16 @@
 }
 
 .delete-button:hover, .approve-button:hover {
-  color: #d9534f; /* Red for delete */
+  color: #d9534f; 
 }
 
 .approve-button:hover {
-  color: #28a745; /* Green for approve */
+  color: #28a745; 
 }
 
-/* Approved vs Unapproved Replies */
+
 .unapproved-reply {
-  background-color: #fff5f5; /* Light red for unapproved */
+  background-color: #fff5f5; 
 }
 
 .reply-message {
@@ -54,7 +54,6 @@
   align-items: center;
 }
 
-/* Reply Form Styling */
 .reply-form input[type="text"] {
   width: 100%;
   padding: 10px;
@@ -104,13 +103,13 @@
 <div class="unapproved-posts">
   {% for post in unapproved_posts %}
     <div class="unapproved-post">
-      <!-- Check if the post is a child (reply) -->
+      
       {% if post.is_child %}
         <h4 class="post-type">Reply to:</h4>
         <div class="parent-post">
           <h5>{{ post.parent_title }}</h5>
           <p>{{ post.parent_message }}</p>
-          <!-- Divider between content and author/date -->
+          
           <hr class="post-divider">
           <div class="post-footer">
             <p><strong>Author:</strong> {{ post.parent_author }} | <small>{{ post.parent_date }}</small></p>
@@ -129,14 +128,14 @@
               </form>
               <form method="POST" action="{{ url_for('delete_reply', reply_id=post.id) }}" class="delete-post-form">
                 <button type="submit" class="delete-button">
-                  <i class="fa fa-trash"></i> <!-- Trashcan icon -->
+                  <i class="fa fa-trash"></i> 
                 </button>
               </form>
             </div>
           </div>
         </div>
       {% else %}
-        <!-- Parent Post -->
+        
         <h4 class="post-type">Unapproved Post:</h4>
         <div class="parent-post">
           <h5>{{ post.title }}</h5>
@@ -150,7 +149,7 @@
               </form>
               <form method="POST" action="{{ url_for('delete_post', post_id=post.id) }}" class="delete-post-form">
                 <button type="submit" class="delete-button">
-                  <i class="fa fa-trash"></i> <!-- Trashcan icon -->
+                  <i class="fa fa-trash"></i> 
                 </button>
               </form>
             </div>
